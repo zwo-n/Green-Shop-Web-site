@@ -1,0 +1,61 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <div class="categories">
+      <!-- 카테고리 값을 입력받아 / 경로로 (로컬경로) GET요청 보내기-->
+      <form id="category-form" action="/" method = "get">
+        <label for="category">카테고리</label>
+        <select id="category" name="category">
+          <option value="">전체 보기</option>
+          <!-- 현재 등록된 상품의 카테고리를 콤보박스를 통해 보여주기-->
+          {% for category in categories %}
+            <option value="{{ category.code }}">{{ category.code }}</option>
+          {% endfor %}
+        </select>
+        <button class="btn">검색</button> 
+      </form>
+      </div>
+        <div class ="products">
+          <!-- 서버로부터 products값을 받아 반복문을 통해 화면에 표시 -->
+          {% for product in products %}
+          <div class="product">
+            <div class="product-head">
+              <div class="product-author">{{product.name}}</div>
+              <!-- 가장 최근 구매 상품이라면 인기상품 표시 -->
+              {% if product.name == latestP.productName%}
+              <a class="product-latest" style="color: red;"> 인기상품</a>
+              {% endif %}
+             </div>
+            <input type="hidden" value="{{product.id}}" class="twit-id">
+            <!-- 이미지가 있다면 함께 표시 -->
+            {% if product.img %}
+              <div class="product-img">
+                <img src="{{product.img}}" alt="상품 이미지" width="100">
+              </div>
+            {% endif %}
+            <div class="product-price">{{product.price}} ₩</div>
+            <!-- 재고가 1개 뿐이라면 매진임박 표시-->
+            {% if product.quantity==1 %}
+            <div class ="product-quantity" style="color:blue;">매진 임박!</div>
+            {%endif%}
+            <a> 잔여수량 {{product.quantity}}</a>
+            <!-- 입력받은 구매 수량과 hidden값인 productID도 함께 /buy 로 POST 요청-->
+            <form id="buy-form" action="/buy" method="post">
+              
+                <div class="input_quantity">
+                <input id="quantity" type="number" name="quantity" min="1" required>
+                <input type="hidden" name="productId" value="{{product.id}}"> 
+              <button class="btn" type="submit">구매하기</button>
+           
+              </div>
+              
+            </form>
+          </div>
+        {% endfor %}
+      </div>
+   
+    
+    
+{% endblock %}
+
+

@@ -1,0 +1,63 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div>
+  <h2>상품 등록</h2>
+<!-- name, code, quantity, price, url을 입력받아 /post경로로 POST 요청 -->
+  <form id="product-form" action="/post" method="post" enctype="multipart/form-data">
+    <div class="input-group">
+      <label for="name">상품명</label>
+      <input id="name" type="text" name="name" required>
+    </div>
+    <div class="input-group">
+      <label for="code">상품코드</label>
+      <input id="code" type="text" name="code" required>
+    </div>
+    <div class="input-group">
+      <label for="quantity">수량</label>
+      <input id="quantity" type="number" name="quantity" required>
+    </div>
+    
+    <div class="input-group">
+      <label for="price">가격</label>
+      <input id="price" type="number" step="0.01" name="price" required>
+    </div>
+    <div class="img-preview">
+      <img id="img-preview" src="" style="display: none;" width="250" alt="미리보기">
+      <input id="img-url" type="hidden" name="url">
+    </div>
+    <div>
+      <label for="img">사진 업로드</label>
+      <input id="img" type="file" accept="image/*" >
+    </div>
+    <button type="submit" class="btn">상품 등록</button>
+  </form>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script>
+    // client가 이미지를 업로드한 경우
+    // formData에 이미지 데이터를 넣어 /post/img 로 POST 요청
+    // 그 후, client화면에서 이미지를 확인할 수 있도록 표시
+    if (document.getElementById('img')) {
+      document.getElementById('img').addEventListener('change', function(e) {
+        const formData = new FormData();
+        formData.append('img', this.files[0]);
+
+        axios.post('/post/img', formData)
+          .then((res) => {
+            document.getElementById('img-url').value = res.data.url; 
+            document.getElementById('img-preview').src = res.data.url;  
+            document.getElementById('img-preview').style.display = 'inline';  
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      });
+    }
+
+
+  </script>
+{% endblock %}

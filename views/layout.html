@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<!--nunjucks template engine으로 화면 개인 맞춤화-->
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="/main.css">
+  </head>
+  <header>
+    <div class="header">Green Shop🌳</div>
+    <div class="header_login">
+      <!--로그인 안된 상태 라면 로그인 버튼 표시-->
+      <!--로그인 상태 라면 로그아웃 버튼 표시-->
+      {% if user%}
+        <input id="my-id" type="hidden" value="{{user.id}}">
+        <a id="logout" href="/auth/logout" class="btn">로그아웃</a>
+      {%else %}
+        <a href="/auth" class="btn">로그인</a>
+      {%endif%}
+    </div>
+    <!-- 로그인 유저에 대한 간단한 정보 페이지 오른쪽 상단에 표시-->
+    {% if user %}
+    <div class="user-name">{{'반가워요! ' + user.nick + '님'}}</div>
+      <div class="header_plus">
+              <div>구매 횟수</div>
+              <div class="count">{{purchaseCount}} 번</div>
+              <div>등급</div>
+              <!-- 구매 횟수에 따른 등급 표시-->
+              {% if purchaseCount >= 8 %}
+                  <div class="count">열매 🍏</div>
+              {% elif purchaseCount >= 6 %}
+                  <div class="count">꽃 🌼</div>
+              {% elif purchaseCount >= 4 %}
+                  <div class="count">떡잎 🍃</div>
+              {% elif purchaseCount >= 2 %}
+                  <div class="count">새싹 🌱</div>
+              {% else %}
+                  <div class="count">씨앗 </div>
+              {% endif %}
+        {%endif%}
+      </div>
+  </header>
+  <body>
+    <div class="bar_div">
+    <ul>
+        <li><a class="bar" href="/">홈</a></li>
+        <!-- 로그인 시, 상품 등록, 구매 내역 확인 상단바 표시-->
+        {% if user %}
+        <li><a class="bar" href="/post">상품 등록</a></li>
+        <li>
+          <a class="bar" href="/buy/purchased">구매 내역 확인</a>
+        </li>
+        {% endif %}
+    </ul>
+  </div>
+    <div class="container">
+      
+      {% block content %}
+      {% endblock %}
+    </div>
+    <footer>
+      2024©KangJiwon
+    </footer>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+      window.onload = () => {
+        if (new URL(location.href).searchParams.get('error')) {
+          alert(new URL(location.href).searchParams.get('error'));
+        }
+      };
+    </script>
+    {% block script %}
+    {% endblock %}
+  </body>
+</html>

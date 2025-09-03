@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <div class="purchased">
+        <h2>구매 내역</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>상품명</th>
+                    <th>수량</th>
+                    <th>총 가격</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 서버로부터 purchases값을 전달받아 반복문을 통해 화면에 표시-->
+                {% for purchase in purchases %}
+                    <tr>
+                        <td>{{ purchase.productName }}</td>
+                        <td>{{ purchase.quantity }}</td>
+                        <td>{{ purchase.totalPrice }} 원</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
